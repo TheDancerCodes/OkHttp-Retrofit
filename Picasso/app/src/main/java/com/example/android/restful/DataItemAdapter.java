@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.restful.model.DataItem;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,8 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
     private Map<String, Bitmap> mBitmaps = new HashMap<>();
     private Context mContext;
     private SharedPreferences.OnSharedPreferenceChangeListener prefsListener;
+    private static final String PHOTOS_BASE_URL =
+            "http://560057.youcanlearnit.net/services/images/";
 
     public DataItemAdapter(Context context, List<DataItem> items) {
         this.mContext = context;
@@ -71,14 +74,25 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
         try {
             holder.tvName.setText(item.getItemName());
             //display image
-            if (mBitmaps.containsKey(item.getItemName())) {
-                Bitmap bitmap = mBitmaps.get(item.getItemName());
-                holder.imageView.setImageBitmap(bitmap);
-            } else {
-                ImageDownloadTask task = new ImageDownloadTask();
-                task.setViewHolder(holder);
-                task.execute(item);
-            }
+//            if (mBitmaps.containsKey(item.getItemName())) {
+//                Bitmap bitmap = mBitmaps.get(item.getItemName());
+//                holder.imageView.setImageBitmap(bitmap);
+//            } else {
+//                ImageDownloadTask task = new ImageDownloadTask();
+//                task.setViewHolder(holder);
+//                task.execute(item);
+//            }
+
+            // Locate the image that you want to display
+            String url = PHOTOS_BASE_URL + item.getImage();
+
+            // Instantiate Picasso
+            Picasso.with(mContext)
+                    .load(url)
+                    .resize(50, 50) // resize the image to match the imageView in the layout file
+                    .into(holder.imageView);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -122,45 +136,45 @@ public class DataItemAdapter extends RecyclerView.Adapter<DataItemAdapter.ViewHo
         }
     }
 
-    private class ImageDownloadTask extends AsyncTask<DataItem, Void, Bitmap> {
-        private static final String PHOTOS_BASE_URL =
-                "http://560057.youcanlearnit.net/services/images/";
-        private DataItem mDataItem;
-        private ViewHolder mHolder;
-
-        public void setViewHolder(ViewHolder holder) {
-            mHolder = holder;
-        }
-
-        @Override
-        protected Bitmap doInBackground(DataItem... dataItems) {
-
-            mDataItem = dataItems[0];
-            String imageUrl = PHOTOS_BASE_URL + mDataItem.getImage();
-            InputStream in = null;
-
-            try {
-                in = (InputStream) new URL(imageUrl).getContent();
-                return BitmapFactory.decodeStream(in);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            mHolder.imageView.setImageBitmap(bitmap);
-            mBitmaps.put(mDataItem.getItemName(), bitmap);
-        }
-    }
+//    private class ImageDownloadTask extends AsyncTask<DataItem, Void, Bitmap> {
+//        private static final String PHOTOS_BASE_URL =
+//                "http://560057.youcanlearnit.net/services/images/";
+//        private DataItem mDataItem;
+//        private ViewHolder mHolder;
+//
+//        public void setViewHolder(ViewHolder holder) {
+//            mHolder = holder;
+//        }
+//
+//        @Override
+//        protected Bitmap doInBackground(DataItem... dataItems) {
+//
+//            mDataItem = dataItems[0];
+//            String imageUrl = PHOTOS_BASE_URL + mDataItem.getImage();
+//            InputStream in = null;
+//
+//            try {
+//                in = (InputStream) new URL(imageUrl).getContent();
+//                return BitmapFactory.decodeStream(in);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } finally {
+//                try {
+//                    if (in != null) {
+//                        in.close();
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Bitmap bitmap) {
+//            super.onPostExecute(bitmap);
+//            mHolder.imageView.setImageBitmap(bitmap);
+//            mBitmaps.put(mDataItem.getItemName(), bitmap);
+//        }
+//    }
 }
