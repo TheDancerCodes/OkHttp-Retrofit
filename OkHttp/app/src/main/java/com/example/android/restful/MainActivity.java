@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
         if (networkOk) {
             RequestPackage requestPackage = new RequestPackage();
             requestPackage.setEndPoint(JSON_URL);
-//            requestPackage.setParam("category", "Entrees");
-            requestPackage.setMethod("GET");
+            requestPackage.setParam("category", "Desserts");
+            requestPackage.setMethod("POST");
 
             Intent intent = new Intent(this, MyService.class);
             intent.putExtra(MyService.REQUEST_PACKAGE, requestPackage);
