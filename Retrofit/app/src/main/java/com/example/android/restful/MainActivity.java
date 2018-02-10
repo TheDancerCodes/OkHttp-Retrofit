@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int SIGNIN_REQUEST = 1001;
     public static final String MY_GLOBAL_PREFS = "my_global_prefs";
 
-    private static final String JSON_URL =
-            "http://560057.youcanlearnit.net/services/json/itemsfeed.php";
 
     List<DataItem> mItemList;
     DrawerLayout mDrawerLayout;
