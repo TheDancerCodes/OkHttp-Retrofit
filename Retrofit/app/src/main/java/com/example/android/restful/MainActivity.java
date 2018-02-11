@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.android.restful.model.DataItem;
 import com.example.android.restful.services.MyService;
+import com.example.android.restful.services.MyWebService;
 import com.example.android.restful.utils.NetworkHelper;
 
 import java.util.Arrays;
@@ -150,6 +151,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestData() {
+
+        // Trigger the Intent Service to Request Data
+        Intent intent = new Intent(this, MyWebService.class);
+        startService(intent);
     }
 
     private void requestData(String category) {
