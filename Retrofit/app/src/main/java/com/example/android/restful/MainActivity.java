@@ -80,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "You chose " + category,
                         Toast.LENGTH_SHORT).show();
                 mDrawerLayout.closeDrawer(mDrawerList);
+
+                /*
+                   When a User chooses one of the categories, we call the requestData() method
+                   and passing the appropriate value.
+                  */
                 requestData(category);
             }
         });
@@ -156,19 +161,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestData() {
 
-        // Trigger the Intent Service to Request Data
-//        Intent intent = new Intent(this, MyWebService.class);
-//        startService(intent);
-
         // Instance of the Web Service Interface
         MyWebService webService =
                 MyWebService.retrofit.create(MyWebService.class);
 
         // Instance of the Call class
         Call<DataItem[]> call = webService.dataItems();
+        sendRequest(call);
+
+    }
+
+    private void requestData(String category) {
+        // Instance of the Web Service Interface
+        MyWebService webService =
+                MyWebService.retrofit.create(MyWebService.class);
+
+        // Instance of the Call class
+        Call<DataItem[]> call = webService.dataItems(category);
+        sendRequest(call);
+    }
+
+    private void sendRequest(Call<DataItem[]> call) {
 
         // Trigger call to Web Service Asynchronously
         call.enqueue(new Callback<DataItem[]>() {
+
             @Override
             public void onResponse(Call<DataItem[]> call, Response<DataItem[]> response) {
                 // When data is received from Web Service
@@ -191,8 +208,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void requestData(String category) {
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
