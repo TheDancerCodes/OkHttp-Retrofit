@@ -28,6 +28,10 @@ import com.example.android.restful.utils.NetworkHelper;
 import java.util.Arrays;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
@@ -153,8 +157,38 @@ public class MainActivity extends AppCompatActivity {
     private void requestData() {
 
         // Trigger the Intent Service to Request Data
-        Intent intent = new Intent(this, MyWebService.class);
-        startService(intent);
+//        Intent intent = new Intent(this, MyWebService.class);
+//        startService(intent);
+
+        // Instance of the Web Service Interface
+        MyWebService webService =
+                MyWebService.retrofit.create(MyWebService.class);
+
+        // Instance of the Call class
+        Call<DataItem[]> call = webService.dataItems();
+
+        // Trigger call to Web Service Asynchronously
+        call.enqueue(new Callback<DataItem[]>() {
+            @Override
+            public void onResponse(Call<DataItem[]> call, Response<DataItem[]> response) {
+                // When data is received from Web Service
+
+                DataItem[] dataItems = response.body();
+                Toast.makeText(MainActivity.this,
+                        "Received " + dataItems.length + " items from service",
+                        Toast.LENGTH_SHORT).show();
+
+                mItemList = Arrays.asList(dataItems);
+                displayData();
+
+            }
+
+            @Override
+            public void onFailure(Call<DataItem[]> call, Throwable t) {
+                // When a failure occurs
+
+            }
+        });
     }
 
     private void requestData(String category) {
